@@ -1,0 +1,228 @@
+﻿@*@model FitnessAdvisor.Models.InformationViewModel*@
+@{
+    ViewBag.Title = "Fitness!";
+}
+
+@if (User.Identity.IsAuthenticated)
+{   
+    <div class="jumbotron">
+            <h1>Hi @ViewBag.firstname!<a class="btn btn-default" id="dan" href="~/CurrentWeights/Create">Go to workout!</a></h1>@*<a class="btn btn-default" href="~/CurrentWeights/Create">Go to workout!</a>*@
+        @*<p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>*@
+    </div>
+
+    <div class="row">
+        <div class="col-md-6" style="background-color:honeydew">
+            <h1><strong>Body Info</strong></h1>
+            <table width="360">
+                <tr>
+                    <th>Weight</th>
+                    <td style="color:dodgerblue; font-size:30px">@ViewBag.weight lbs</td>
+                </tr>
+                <tr>
+                    <th>Height</th>
+                    <td style="color:dodgerblue; font-size:30px">@ViewBag.height in</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td style="color:dodgerblue; font-size:30px">@ViewBag.age yrs</td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="col-md-6">
+            <h1><strong>BMR, BMI & Recommended Calories per Day</strong></h1>
+            <table width="590">
+                <tr>
+                    <th>Basal Metabolic Rate</th>
+                    <th>Body Mass Index</th>
+                    <th>Calories Required**</th>
+                </tr>
+                <tr>
+                    <td style="color:seagreen; font-size:50px">@ViewBag.bmr</td>
+                    @if (@ViewBag.bmi >= 25 && ViewBag.bmi <= 29)
+                    {
+                        <td style="color:orange; font-size:50px">@ViewBag.bmi</td>
+                    }
+                    else if(@ViewBag.bmi < 25)
+                    {
+                        <td style="color:green; font-size:50px">@ViewBag.bmi</td>
+                    }
+                    else if (@ViewBag.bmi > 29)
+                    {
+                        <td style="color:red; font-size:70px">@ViewBag.bmi</td>
+                    }
+                    <td style="color:seagreen; font-size:50px">@ViewBag.recommendedCalIntake</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-md-6">
+        <h1><strong> Expected Weight vs Actual Weight</strong></h1>
+        <canvas id="myChart" width="560" height="270"></canvas>
+    @{ 
+
+        double[] aresult = ViewBag.intArray;
+        double[] actualresult = ViewBag.expArray;
+
+        string atest = "";
+
+        for (int i = 0; i < aresult.Length; i++)
+        {
+            if (i == 0)
+            {
+                atest = atest + aresult[i].ToString();
+            }
+            else
+            {
+                atest = atest + "," + aresult[i].ToString();
+            }
+        }
+        string actual = "";
+
+        for (int i = 0; i < actualresult.Length; i++)
+        {
+            if (i == 0)
+            {
+                actual = actual + actualresult[i].ToString();
+            }
+            else
+            {
+                actual = actual + "," + actualresult[i].ToString();
+            }
+        }
+    }
+    <script>
+
+        var result = "@atest";
+        var resultsArray = result.split(',');
+        var actresult = "@actual";
+        var actresultsArray = actresult.split(',');
+        var context = $("#myChart").get(0).getContext("2d");
+        var data = {
+            labels: ["3/30", "3/31", "4/1", "4/2", "4/3", "4/4", "4/5", "4/6", "4/7", "4/8"], //Change labels
+
+            datasets: [{
+
+                label: "My Projected dataset",
+                fillColor: "rgba(220,220,220,0,2)",
+                strokeColor: "rgba(158, 158, 158)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: resultsArray
+            }, {
+
+                label: "My Actual dataset",
+                fillColor: "rgba(100,220,120,0,2)",
+                strokeColor: "rgba(73,226,14,1)",//green
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: actresultsArray
+
+            }]
+        }
+        var options = {
+            ///Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+            //String - Colour of the grid lines
+            scaleGridLineColor: "rgba(0,0,0,.05)",
+            //Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+            //Boolean - Whether the line is curved between points
+            bezierCurve: true,
+            //Number - Tension of the bezier curve between points
+            bezierCurveTension: 0.3,
+            //Boolean - Whether to show a dot for each point
+            pointDot: true,
+            //Number - Radius of each point dot in pixels
+            pointDotRadius: 4,
+            //Number - Pixel width of point dot stroke
+            pointDotStrokeWidth: 0,
+            //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+            pointHitDetectionRadius: 20,
+            //Boolean - Whether to show a stroke for datasets
+            datasetStroke: false,
+            //Number - Pixel width of dataset stroke
+            datasetStrokeWidth: 4,
+            //Boolean - Whether to fill the dataset with a colour
+            datasetFill: false,
+
+        }
+        var myLineChart = new Chart(context).Line(data, options)
+    </script>
+        <p style="color: #49E20E"><strong>&rArr; Expected Weight loss assuming plan is followed.</strong></p>
+        <p style="color: #9E9E9E"><strong>&rArr; Actual weight loss.</strong></p>
+    </div>
+
+
+    <div class="col-md-6" style="background-color:honeydew">
+        <h1><strong>Calorie Burn Status</strong></h1>
+
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+        </div><p id="statusbar">1706 Calories Consumed Today</p>
+<br />
+
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-info" style="width: 90%"></div>
+        </div><p id="statusbar">@ViewBag.calBurned Calories Burned Today</p>
+<br />
+
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-warning" style="width: 13%"></div>
+        </div><p id="statusbar">13% of the way to losing 8 lbs in 8 weeks</p>
+<br />
+
+        <div class="progress progress-striped active">
+            <div class="progress-bar progress-bar-danger" style="width: 83%;"></div>
+        </div><p id="statusbar">Body Mass Index</p>
+            <p style="font-size: 9px">**Calories needed to maintain weight given the activity level and BMR.</p>
+           @* <a class="btn btn-default" id="danny" href="~/CurrentWeights/Create">Go to workout!</a>*@
+        </div> @*danielyang Navigation Button!*@
+    </div>
+}
+else
+{
+    <div class="jumbotron">
+            <h1 style="text-align:center; font-style:italic">Welcome to Fitness Advisor</h1>
+        @*<p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>*@
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Go from this...</h2>
+            <p>
+                Get healthy!!
+            </p>
+            <div id="cf">
+                <img class="bottom" src="~/Photos/situps.jpg" height="450" width="480"/>
+                <img class="top" src="~/Photos/potato.jpg" height="450" width="480"/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>To this!</h2>
+            <p>
+                Get up and take those beginning steps.
+            </p>
+            <div id="cf">
+                <img class="bottom" src="~/Photos/couplerunning.jpeg" style="margin:0 0 0 -50px"  height="450" width="550"/>
+                <img  class="top" src="~/Photos/couchpotatocouple.jpg" style="margin:0 0 0 -50px"  height="450" width="550"/>
+            </div><br /><br /><br /><br /><br /><br /><br /><br />
+        </div>
+    </div>
+    @*<div class="row">
+        <div class="col-md-12">
+            <h2>This could be you but...</h2>
+            <br />
+            <br />
+
+            <p>Can you beat Doomsday?</p>
+            <img src="~/Photos/Celjb5XWEAEwJaA.jpg large.jpg" />
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        </div>
+    </div>*@
+}

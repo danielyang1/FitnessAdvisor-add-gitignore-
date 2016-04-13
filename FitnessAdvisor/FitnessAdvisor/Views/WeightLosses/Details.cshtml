@@ -1,0 +1,90 @@
+﻿@model FitnessAdvisor.Models.WeightLoss
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>WeightLoss</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.caloriesBurnedSoFar)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.caloriesBurnedSoFar)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.caloriesBurnedThisWorkout)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.caloriesBurnedThisWorkout)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.expectedCaloriesBurned)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.expectedCaloriesBurned)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.caloriesEaten)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.caloriesEaten)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.amtOfWeightLoss)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.amtOfWeightLoss)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.today)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.today)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BMI)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BMI)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BMR)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BMR)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
